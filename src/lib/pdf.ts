@@ -11,7 +11,7 @@ export async function buildPdf(photos: Photo[], layout: Layout): Promise<Uint8Ar
   // One photo at a time keeps memory use low on phones.
   for (const [i, photo] of photos.entries()) {
     const box = layout.boxes[i]
-    const image = await doc.embedJpg(await renderForPrint(photo, box))
+    const image = await doc.embedJpg(await (await renderForPrint(photo, box)).arrayBuffer())
     // PDF coordinates start at the bottom-left; our boxes start at the top-left.
     page.drawImage(image, {
       x: box.x,
@@ -39,16 +39,11 @@ export function downloadPdf(bytes: Uint8Array, filename: string) {
 let printFrame: HTMLIFrameElement | null = null
 
 /**
- * Opens the print dialog for the PDF. Desktop browsers print it from a hidden
- * iframe; iOS can't, so `fallbackWindow` (opened during the click, before any
- * await, so popup blockers allow it) shows the PDF to print from the share menu.
+ * Opens the print dialog for the PDF from a hidden iframe. Desktop browsers
+ * only: phone browsers can't show a PDF inside a page (see printSheet.ts).
  */
-export function printPdf(bytes: Uint8Array, fallbackWindow: Window | null) {
+export function printPdf(bytes: Uint8Array) {
   const url = toUrl(bytes)
-  if (fallbackWindow) {
-    fallbackWindow.location.href = url
-    return
-  }
   // Keep the frame until the next print; removing it can cancel an open dialog.
   if (printFrame) {
     URL.revokeObjectURL(printFrame.src)

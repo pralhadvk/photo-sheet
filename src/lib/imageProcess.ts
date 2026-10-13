@@ -126,7 +126,7 @@ function makePreview(img: HTMLImageElement): Promise<Blob> {
  * to the box's shape, and sized for 300 DPI (never upscaled). This keeps the
  * PDF small without visible quality loss.
  */
-export async function renderForPrint(photo: Photo, box: Box): Promise<ArrayBuffer> {
+export async function renderForPrint(photo: Photo, box: Box): Promise<Blob> {
   const img = await loadImage(photo.url)
   const sideways = photo.rotation % 180 !== 0
   const shownW = sideways ? img.naturalHeight : img.naturalWidth
@@ -157,5 +157,5 @@ export async function renderForPrint(photo: Photo, box: Box): Promise<ArrayBuffe
   const k = w / shownW // crop was measured on the full-size photo
   ctx.drawImage(source, ((shownW - cropW) / 2) * k, ((shownH - cropH) / 2) * k, cropW * k, cropH * k, 0, 0, outW, outH)
 
-  return (await toJpeg(canvas, JPEG_QUALITY)).arrayBuffer()
+  return toJpeg(canvas, JPEG_QUALITY)
 }

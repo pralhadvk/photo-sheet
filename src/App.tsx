@@ -6,12 +6,8 @@ import { SettingsPanel } from './components/SettingsPanel'
 import { arrayMove } from '@dnd-kit/sortable'
 import { PhotoError, readPhoto, releasePhoto } from './lib/imageProcess'
 import { aspectOf, computeLayout, MAX_PHOTOS } from './lib/layout'
+import { clearPrintSheet, isPhone, printSheet } from './lib/printSheet'
 import type { Photo, Rotation, Settings } from './types'
-
-/** iPhones and iPads (including iPads that report themselves as Macs). */
-const isIOS = () =>
-  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 
 const DEFAULT_SETTINGS: Settings = {
   mode: 'auto',
@@ -44,6 +40,9 @@ export default function App() {
       window.removeEventListener('drop', prevent)
     }
   }, [])
+
+  // A print sheet left over from an earlier print would be out of date now.
+  useEffect(() => clearPrintSheet, [photos, layout])
 
   // Photos only live in this tab, so warn before closing or reloading it.
   const hasPhotos = photos.length > 0
@@ -111,22 +110,22 @@ export default function App() {
   }
 
   async function exportPdf(action: ExportAction) {
-    // iOS can't print from a hidden frame, so open a tab for the PDF now, while
-    // still handling the click (a tab opened after the await would be blocked).
-    const printWindow = action === 'print' && isIOS() ? window.open('', '_blank') : null
     setExporting(action)
     try {
+      if (action === 'print' && isPhone()) {
+        await printSheet(photos, layout)
+        return
+      }
       // pdf-lib is large, so it's only downloaded once someone exports.
       const { buildPdf, downloadPdf, printPdf } = await import('./lib/pdf')
       const bytes = await buildPdf(photos, layout)
       if (action === 'download') {
         downloadPdf(bytes, `photos-${new Date().toISOString().slice(0, 10)}.pdf`)
       } else {
-        printPdf(bytes, printWindow)
+        printPdf(bytes)
       }
     } catch (err) {
       console.error(err)
-      printWindow?.close()
       setNotice('Something went wrong while creating the PDF. Please try again.')
     } finally {
       setExporting(null)
