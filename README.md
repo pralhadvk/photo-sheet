@@ -1,6 +1,6 @@
 # PhotoSheet
 
-Put up to 8 photos on a single print-ready PDF page. It all runs in the browser, so photos never leave the user's device.
+Put up to 10 photos on a single print-ready PDF page. It all runs in the browser, so photos never leave the user's device.
 
 ## Develop
 

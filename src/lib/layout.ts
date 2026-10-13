@@ -1,6 +1,6 @@
 import type { Box, FitMode, Layout, Orientation, PageSizeId, Photo, Settings } from '../types'
 
-export const MAX_PHOTOS = 8
+export const MAX_PHOTOS = 10
 
 export const PAGE_SIZES: Record<PageSizeId, { label: string; width: number; height: number }> = {
   a4: { label: 'A4', width: 595.28, height: 841.89 },
@@ -25,7 +25,7 @@ const balancedScore = (areas: number[]) =>
 /**
  * Arranges photos (kept in order) into rows. Every photo in a row shares the
  * same height and the row spans the content width, so nothing is cropped.
- * With at most 8 photos there are at most 128 ways to split them into rows,
+ * With at most 10 photos there are at most 512 ways to split them into rows,
  * so we try them all and keep the best-scoring split.
  */
 function justifiedRows(aspects: number[], width: number, height: number, gap: number): Candidate {

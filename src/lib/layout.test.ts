@@ -13,6 +13,8 @@ const photoSets: Record<string, number[]> = {
   '7 portrait': Array(7).fill(0.75),
   '8 mixed': [1.5, 0.75, 1.33, 0.56, 1.78, 1, 0.75, 1.5],
   'panorama + 2': [4, 0.75, 0.75],
+  '10 landscape': Array(10).fill(1.5),
+  '10 mixed': [1.5, 0.75, 1.33, 0.56, 1.78, 1, 0.75, 1.5, 0.75, 1.33],
 }
 
 const variants: Partial<Settings>[] = [
@@ -69,6 +71,12 @@ describe('layout choices', () => {
     const l = computeLayout(Array(8).fill(0.75), base)
     const areas = l.boxes.map((b) => b.w * b.h)
     expect(Math.max(...areas) / Math.min(...areas)).toBeCloseTo(1, 6)
+  })
+
+  it('balances rows when the photos can’t split evenly (10 into 3, 3, 4)', () => {
+    const rows = rowSizes(computeLayout(Array(10).fill(1.5), base))
+    expect(rows.reduce((a, b) => a + b)).toBe(10)
+    expect(Math.max(...rows) - Math.min(...rows)).toBeLessThanOrEqual(1)
   })
 
   it('uses a landscape 2×2 grid for 4 landscape photos', () => {

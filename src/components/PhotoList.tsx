@@ -27,7 +27,7 @@ type Props = {
   onReorder: (activeId: string, overId: string) => void
 }
 
-/** Shows all 8 slots so the limit is visible at a glance. */
+/** Shows every slot so the limit is visible at a glance. */
 export function PhotoList({ photos, onRemove, onRotate, onReorder }: Props) {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
@@ -44,7 +44,7 @@ export function PhotoList({ photos, onRemove, onRotate, onReorder }: Props) {
     <div className="flex flex-col gap-2">
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={photos.map((p) => p.id)} strategy={rectSortingStrategy}>
-          <ol className="grid grid-cols-4 gap-2">
+          <ol className="grid grid-cols-5 gap-2">
             {photos.map((photo, i) => (
               <SortableThumb
                 key={photo.id}
@@ -135,7 +135,7 @@ function ThumbButton({
       onKeyDown={stop}
       aria-label={label}
       title={title}
-      className={`absolute top-1 grid h-6 w-6 cursor-pointer place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 ${className}`}
+      className={`absolute top-1 grid h-5 w-5 cursor-pointer place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 ${className}`}
     >
       <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden="true">
         {children}

@@ -149,7 +149,7 @@ export default function App() {
             <div>
               <h1 className="text-base font-semibold leading-tight">PhotoSheet</h1>
               <p className="hidden text-xs text-stone-500 sm:block">
-                Up to 8 photos on one print-ready PDF page. Photos never leave your device.
+                Up to {MAX_PHOTOS} photos on one print-ready PDF page. Photos never leave your device.
               </p>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-4 p-4 pb-28 sm:pb-4 lg:grid-cols-[300px_minmax(0,1fr)_260px] lg:items-start">
+      <main className="mx-auto grid max-w-7xl gap-4 p-4 pb-28 sm:pb-4 lg:grid-cols-[340px_minmax(0,1fr)_260px] lg:items-start">
         <section className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4">
           <div className="flex items-baseline justify-between">
             <h2 className="text-sm font-semibold">
